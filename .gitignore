@@ -1,0 +1,12 @@
+.idea/
+.vscode/
+.env
+.DS_Store
+
+terraform-provider-zesty
+bin/
+dist/
+
+.terraform/
+*.tfstate*
+*.lock.hcl
