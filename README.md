@@ -24,7 +24,7 @@ If you wish to onboard the cluster itself via Terraform, you can include:
 ```terraform
 
 module "zesty" {
-  source              = "zesty-co/eks-cluster/zesty-co"
+  source              = "zesty-co/aws-eks-cluster/zesty"
   aws_region          = "{{your aws region}}"
 }
 
