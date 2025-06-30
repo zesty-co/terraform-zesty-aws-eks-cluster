@@ -4,6 +4,12 @@ variable "role_name" {
   default     = "ZestyIamRole"
 }
 
+variable "policy_name" {
+  description = "Name of the IAM policy"
+  type        = string
+  default     = "ZestyPolicy"
+}
+
 variable "max_session_duration" {
   description = "Assumed role max session duration in seconds"
   type        = number
@@ -23,17 +29,6 @@ variable "products" {
     name   = "Kompass"
     active = true
   }]
-}
-
-variable "aws_region" {
-  description = "Region of AWS account to deploy in"
-  type        = string
-}
-
-variable "aws_profile" {
-  description = "Profile of AWS account to deploy in"
-  type        = string
-  default     = "default"
 }
 
 variable "trusted_principal" {

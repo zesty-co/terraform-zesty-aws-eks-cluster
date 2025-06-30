@@ -26,7 +26,7 @@ resource "aws_iam_role" "zesty_iam_role" {
 }
 
 resource "aws_iam_role_policy" "zesty_policy" {
-  name = "Zesty-Policy-${data.aws_caller_identity.current.account_id}"
+  name = var.policy_name
   role = aws_iam_role.zesty_iam_role.id
 
   policy = jsonencode({
