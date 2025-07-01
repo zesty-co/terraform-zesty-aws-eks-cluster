@@ -107,7 +107,7 @@ resource "aws_iam_role_policy" "zesty_policy" {
 resource "zesty_account" "result" {
   account = {
     id             = data.aws_caller_identity.current.account_id
-    cloud_provider = var.cloud_provider
+    cloud_provider = "AWS"
     role_arn       = aws_iam_role.zesty_iam_role.arn
     external_id    = random_uuid.zesty_external_id.result
     products       = var.products

@@ -16,12 +16,6 @@ variable "max_session_duration" {
   default     = 43200
 }
 
-variable "cloud_provider" {
-  description = "Name of the cloud provider"
-  type        = string
-  default     = "AWS"
-}
-
 variable "products" {
   description = "List of all enabled products"
   type        = list(map(any))
