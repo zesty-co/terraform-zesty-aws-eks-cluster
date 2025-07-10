@@ -1,7 +1,7 @@
-# Terraform module for connecting an AWS EKS cluster to Zesty Kompass
+# Terraform module to connect an AWS EKS cluster to Zesty Kompass
 
-This module allows onboarding to Zesty in order to connect Zesty Kompass
-to an AWS EKS cluster
+This module onboards an AWS account to Zesty, and you can connect an
+AWS EKS cluster to Zesty Kompass
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ to an AWS EKS cluster
 
 ## Optional Provider
 
-If you wish to onboard the cluster itself via Terraform, you can include:
+To connect a cluster (optional) as part of the installation, include:
 
 - helm >= 3
 

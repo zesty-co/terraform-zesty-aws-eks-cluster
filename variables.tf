@@ -1,23 +1,23 @@
 variable "role_name" {
-  description = "Name of the IAM role"
+  description = "IAM role name"
   type        = string
   default     = "ZestyIamRole"
 }
 
 variable "policy_name" {
-  description = "Name of the IAM policy"
+  description = "IAM policy name"
   type        = string
   default     = "ZestyPolicy"
 }
 
 variable "max_session_duration" {
-  description = "Assumed role max session duration in seconds"
+  description = "Maximum session duration of the assumed role (in seconds)"
   type        = number
   default     = 43200
 }
 
 variable "products" {
-  description = "List of all enabled products"
+  description = "List of all products to enable"
   type        = list(map(any))
   default = [{
     name   = "Kompass"
@@ -32,7 +32,7 @@ variable "trusted_principal" {
 }
 
 variable "values_yaml_filename" {
-  description = "Location of the Kompass values.yaml output"
+  description = "Path of values.yaml (default is the current working directory)"
   type        = string
   default     = "values.yaml"
 }
