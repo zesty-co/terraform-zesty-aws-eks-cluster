@@ -2,7 +2,7 @@ terraform {
   required_providers {
     zesty = {
       source  = "zesty-co/zesty"
-      version = "~> 0.1.3"
+      version = "~> 0.1.5"
     }
     aws = {
       source  = "hashicorp/aws"
