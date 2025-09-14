@@ -2,8 +2,6 @@ resource "random_uuid" "zesty_external_id" {}
 
 data "aws_caller_identity" "current" {}
 
-
-
 resource "aws_iam_role" "zesty_iam_role" {
   name                 = var.role_name
   max_session_duration = var.max_session_duration
