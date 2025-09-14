@@ -2,6 +2,10 @@ resource "random_uuid" "zesty_external_id" {}
 
 data "aws_caller_identity" "current" {}
 
+locals {
+  aws_account_id = var.region != "" ? var.region : data.aws_caller_identity.current.account_id
+}
+
 resource "aws_iam_role" "zesty_iam_role" {
   name                 = var.role_name
   max_session_duration = var.max_session_duration
