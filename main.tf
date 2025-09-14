@@ -104,9 +104,12 @@ resource "aws_iam_role_policy" "zesty_policy" {
   })
 }
 
+data "aws_region" "current" {}
+
 resource "zesty_account" "result" {
   account = {
     id             = data.aws_caller_identity.current.account_id
+    aws_region     = data.aws_region.current.region
     cloud_provider = "AWS"
     role_arn       = aws_iam_role.zesty_iam_role.arn
     external_id    = random_uuid.zesty_external_id.result
