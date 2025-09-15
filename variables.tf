@@ -4,6 +4,12 @@ variable "role_name" {
   default     = "ZestyIamRole"
 }
 
+variable "region" {
+  description = "AWS region"
+  default     = ""
+  type        = string
+}
+
 variable "policy_name" {
   description = "IAM policy name"
   type        = string
