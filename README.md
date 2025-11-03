@@ -9,7 +9,7 @@ AWS EKS cluster to Zesty Kompass
 
 ## Providers
 
-- aws >= 5.0
+- aws >= 6.0
 - random >= 3.7.2
 - local >= 2.5.3
 
