@@ -42,3 +42,9 @@ variable "values_yaml_filename" {
   type        = string
   default     = "values.yaml"
 }
+
+variable "create_values_local_file" {
+  description = "Enables the creation of a local values.yaml file"
+  type        = bool
+  default     = true
+}
