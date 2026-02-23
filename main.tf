@@ -108,6 +108,10 @@ data "aws_region" "current" {}
 
 locals {
   region = var.region != "" ? var.region : data.aws_region.current.region
+  values_content = [
+    for p in zesty_account.result.account.products : p.values
+    if p.name == "Kompass" && p.active == true
+  ][0]
 }
 
 resource "zesty_account" "result" {
@@ -123,10 +127,13 @@ resource "zesty_account" "result" {
 }
 
 resource "local_file" "kompass_values" {
-  content = [
-    for p in zesty_account.result.account.products : p.values
-    if p.name == "Kompass" && p.active == true
-  ][0]
+  count      = var.create_values_local_file ? 1 : 0
+  content    = local.values_content
   filename   = var.values_yaml_filename
   depends_on = [zesty_account.result]
+}
+
+moved {
+  from = local_file.kompass_values
+  to   = local_file.kompass_values[1]
 }
