@@ -12,7 +12,7 @@ include "root" {
 }
 
 dependency "account" {
-  config_path = "../account"
+  config_path = find_in_parent_folders("account/terragrunt.hcl")
 }
 
 locals {
