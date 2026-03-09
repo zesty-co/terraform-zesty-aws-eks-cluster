@@ -6,7 +6,13 @@ AWS EKS cluster to Zesty Kompass
 ## Prerequisites
 
 - [Terraform](https://developer.hashicorp.com/terraform/install) 0.13+
-- `token` for Zesty Provider - API token for Zesty platform, provided by a Zesty representative 
+- `token` for Zesty Provider - API token for Zesty platform, provided by a Zesty representative
+
+  ```terraform
+  provider "zesty" {
+    token = "your-zesty-api-token" # replace with your actual token
+  }
+  ```
 
 ## Providers
 
@@ -145,3 +151,12 @@ Uses a `live/` directory layout: environment / datacenter / region / account.
 One `account/` stack is applied once, then each EKS cluster gets its own `kompass-<cluster>/` stack that reads the account output via `dependency`.
 
 </details>
+
+## Kompass Helm Values Reference
+
+The module outputs a `kompass_values_yaml` string containing the credentials and
+metadata needed to connect your cluster to Zesty. It is passed directly to the
+`helm_release` resource via the `values` argument.
+
+For the full list of configurable chart values, see the
+[Kompass `values.yaml`](https://github.com/zesty-co/kompass-insights/blob/main/charts/zesty/values.yaml).
