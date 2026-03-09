@@ -119,8 +119,12 @@ generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<-EOF
-    provider "aws"   { region = "us-east-1" }
-    provider "zesty" { token  = "your-zesty-api-token" }
+    provider "aws" {
+      region = "us-east-1"
+    }
+    provider "zesty" {
+      token = "your-zesty-api-token"
+    }
   EOF
 }
 
@@ -135,7 +139,7 @@ Kompass (`kompass/terragrunt.hcl`):
 
 ```hcl
 dependency "account" {
-  config_path = "../account"
+  config_path = find_in_parent_folders("account/terragrunt.hcl")
 }
 
 inputs = {
@@ -149,6 +153,30 @@ inputs = {
 
 Uses a `live/` directory layout: environment / datacenter / region / account.
 One `account/` stack is applied once, then each EKS cluster gets its own `kompass-<cluster>/` stack that reads the account output via `dependency`.
+
+Per-cluster Kompass (`kompass-eks-prod/terragrunt.hcl`):
+
+```hcl
+include "datacenter" {
+  path = find_in_parent_folders("datacenter.hcl")
+}
+
+dependency "account" {
+  config_path = find_in_parent_folders("account/terragrunt.hcl")
+}
+
+locals {
+  cluster_name = "eks-prod"
+}
+
+terraform {
+  source = "${get_repo_root()}/examples/multi_clusters/terragrunt/modules/kompass"
+}
+
+inputs = {
+  kompass_values_yaml = dependency.account.outputs.kompass_values_yaml
+}
+```
 
 </details>
 
