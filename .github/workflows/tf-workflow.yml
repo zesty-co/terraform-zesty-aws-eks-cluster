@@ -1,4 +1,4 @@
-name: Examples E2E Tests
+name: Terraform CI Workflow
 
 on:
   pull_request:

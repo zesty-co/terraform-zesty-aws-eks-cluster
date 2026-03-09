@@ -74,7 +74,11 @@ Per-cluster Helm deploy (`kompass/`):
 ```terraform
 data "terraform_remote_state" "account" {
   backend = "s3"
-  config  = { bucket = "my-tf-state", key = "zesty/account/terraform.tfstate", region = "us-east-1" }
+  config = {
+    bucket = "my-tf-state"
+    key    = "zesty/account/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 resource "helm_release" "kompass" {
@@ -94,7 +98,7 @@ resource "helm_release" "kompass" {
 <details>
 <summary><strong>Terragrunt</strong></summary>
 
-### Simple (single cluster, one state file)
+### Simple (single cluster, two states)
 
 > [Full example](./examples/simple/terragrunt/)
 
