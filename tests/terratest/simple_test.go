@@ -27,7 +27,8 @@ func TestSimpleExample(t *testing.T) {
 
 	// Copy to temp dir so parallel tests don't collide on .terraform/
 	exampleDir := "../../examples/simple/terraform"
-	tmpDir, _ := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: tmpDir,
@@ -58,7 +59,8 @@ func TestSimpleExamplePlanOnly(t *testing.T) {
 	require.NotEmpty(t, clusterName, "CLUSTER_NAME environment variable must be set")
 
 	exampleDir := "../../examples/simple/terraform"
-	tmpDir := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: tmpDir,

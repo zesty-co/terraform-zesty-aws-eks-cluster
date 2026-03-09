@@ -22,7 +22,8 @@ func TestSimpleTerragruntAccount(t *testing.T) {
 	t.Parallel()
 
 	exampleDir := "../../examples/simple/terragrunt/account"
-	tmpDir := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    tmpDir,
@@ -54,7 +55,8 @@ func TestSimpleTerragruntKompass(t *testing.T) {
 	require.NotEmpty(t, clusterName, "CLUSTER_NAME environment variable must be set")
 
 	exampleDir := "../../examples/simple/terragrunt/kompass"
-	tmpDir := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    tmpDir,
@@ -82,7 +84,8 @@ func TestSimpleTerragruntFullE2E(t *testing.T) {
 
 	// Step 1: Apply account
 	accountDir := "../../examples/simple/terragrunt/account"
-	accountTmpDir := files.CopyTerraformFolderToTemp(t, accountDir, t.Name()+"-account")
+	accountTmpDir, err := files.CopyTerraformFolderToTemp(accountDir, t.Name()+"-account")
+	require.NoError(t, err)
 
 	accountOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    accountTmpDir,
@@ -98,7 +101,8 @@ func TestSimpleTerragruntFullE2E(t *testing.T) {
 
 	// Step 2: Apply kompass
 	kompassDir := "../../examples/simple/terragrunt/kompass"
-	kompassTmpDir := files.CopyTerraformFolderToTemp(t, kompassDir, t.Name()+"-kompass")
+	kompassTmpDir, err := files.CopyTerraformFolderToTemp(kompassDir, t.Name()+"-kompass")
+	require.NoError(t, err)
 
 	kompassOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    kompassTmpDir,

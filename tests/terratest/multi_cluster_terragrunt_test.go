@@ -7,6 +7,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // TestMultiClusterTerragruntAccount runs the multi_clusters/terragrunt account layer.
@@ -21,7 +22,8 @@ func TestMultiClusterTerragruntAccount(t *testing.T) {
 	t.Parallel()
 
 	exampleDir := "../../examples/multi_clusters/terragrunt/live/prod/aws/us-east-1/my-account/zesty/account"
-	tmpDir, _ := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    tmpDir,
@@ -50,7 +52,8 @@ func TestMultiClusterTerragruntKompassProd(t *testing.T) {
 	t.Parallel()
 
 	exampleDir := "../../examples/multi_clusters/terragrunt/live/prod/aws/us-east-1/my-account/zesty/kompass-eks-prod"
-	tmpDir, _ := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    tmpDir,
@@ -78,7 +81,8 @@ func TestMultiClusterTerragruntRunAll(t *testing.T) {
 	_ = os.Getenv("ZESTY_API_TOKEN")
 
 	exampleDir := "../../examples/multi_clusters/terragrunt/live/prod/aws/us-east-1/my-account/zesty"
-	tmpDir := files.CopyTerraformFolderToTemp(t, exampleDir, t.Name())
+	tmpDir, err := files.CopyTerraformFolderToTemp(exampleDir, t.Name())
+	require.NoError(t, err)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir:    tmpDir,
