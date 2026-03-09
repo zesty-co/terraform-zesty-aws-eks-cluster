@@ -40,8 +40,6 @@ module "zesty" {
   source  = "zesty-co/aws-eks-cluster/zesty"
   version = "~> 0.2"
 
-  role_name                = "ZestyIamRole"
-  policy_name              = "ZestyPolicy"
   create_values_local_file = false
 }
 
@@ -68,8 +66,6 @@ module "zesty" {
   source  = "zesty-co/aws-eks-cluster/zesty"
   version = "~> 0.2"
 
-  role_name                = "ZestyIamRole"
-  policy_name              = "ZestyPolicy"
   create_values_local_file = false
 }
 
@@ -129,8 +125,6 @@ generate "provider" {
 }
 
 inputs = {
-  role_name                = "ZestyIamRole"
-  policy_name              = "ZestyPolicy"
   create_values_local_file = false
 }
 ```

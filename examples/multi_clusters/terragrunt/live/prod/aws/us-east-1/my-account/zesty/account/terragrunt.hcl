@@ -5,7 +5,7 @@
 # Outputs kompass_values_yaml consumed by the kompass-eks-* directories.
 ###############################################################################
 
-include "root" {
+include "datacenter" {
   path = find_in_parent_folders("datacenter.hcl")
 }
 
@@ -27,7 +27,5 @@ EOF
 }
 
 inputs = {
-  role_name                = "ZestyIamRole"
-  policy_name              = "ZestyPolicy"
   create_values_local_file = false
 }

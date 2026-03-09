@@ -12,8 +12,6 @@
 module "zesty" {
   source = "../../../"
 
-  role_name                = "ZestyIamRole"
-  policy_name              = "ZestyPolicy"
   create_values_local_file = false
 }
 
