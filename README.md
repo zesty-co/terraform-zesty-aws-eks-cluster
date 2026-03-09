@@ -6,6 +6,7 @@ AWS EKS cluster to Zesty Kompass
 ## Prerequisites
 
 - [Terraform](https://developer.hashicorp.com/terraform/install) 0.13+
+- `token` for Zesty Provider - API token for Zesty platform, provided by a Zesty representative 
 
 ## Providers
 
@@ -19,12 +20,23 @@ To connect a cluster (optional) as part of the installation, include:
 
 - helm >= 3
 
-## Example Usage
+## Examples
+
+<details>
+<summary><strong>Terraform</strong></summary>
+
+### Simple (single cluster, one state file)
+
+> [Full example](./examples/simple/terraform/)
 
 ```terraform
-
 module "zesty" {
-  source = "zesty-co/aws-eks-cluster/zesty"
+  source  = "zesty-co/aws-eks-cluster/zesty"
+  version = "~> 0.2"
+
+  role_name                = "ZestyIamRole"
+  policy_name              = "ZestyPolicy"
+  create_values_local_file = false
 }
 
 resource "helm_release" "kompass" {
@@ -38,3 +50,98 @@ resource "helm_release" "kompass" {
   values = [module.zesty.kompass_values_yaml]
 }
 ```
+
+### Multi-Cluster (one account, N clusters, separate states)
+
+> [Full example](./examples/multi_clusters/terraform/)
+
+Account onboarding (`account/`):
+
+```terraform
+module "zesty" {
+  source  = "zesty-co/aws-eks-cluster/zesty"
+  version = "~> 0.2"
+
+  role_name                = "ZestyIamRole"
+  policy_name              = "ZestyPolicy"
+  create_values_local_file = false
+}
+
+output "kompass_values_yaml" {
+  value     = module.zesty.kompass_values_yaml
+  sensitive = true
+}
+```
+
+Per-cluster Helm deploy (`kompass/`):
+
+```terraform
+data "terraform_remote_state" "account" {
+  backend = "s3"
+  config  = { bucket = "my-tf-state", key = "zesty/account/terraform.tfstate", region = "us-east-1" }
+}
+
+resource "helm_release" "kompass" {
+  name             = "kompass"
+  repository       = "https://zesty-co.github.io/kompass"
+  chart            = "kompass"
+  namespace        = "zesty-system"
+  cleanup_on_fail  = true
+  create_namespace = true
+
+  values = [data.terraform_remote_state.account.outputs.kompass_values_yaml]
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Terragrunt</strong></summary>
+
+### Simple (single cluster, one state file)
+
+> [Full example](./examples/simple/terragrunt/)
+
+Account (`account/terragrunt.hcl`):
+
+```hcl
+terraform {
+  source = "tfr:///zesty-co/aws-eks-cluster/zesty?version=0.2.0"
+}
+
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<-EOF
+    provider "aws"   { region = "us-east-1" }
+    provider "zesty" { token  = "your-zesty-api-token" }
+  EOF
+}
+
+inputs = {
+  role_name                = "ZestyIamRole"
+  policy_name              = "ZestyPolicy"
+  create_values_local_file = false
+}
+```
+
+Kompass (`kompass/terragrunt.hcl`):
+
+```hcl
+dependency "account" {
+  config_path = "../account"
+}
+
+inputs = {
+  kompass_values_yaml = dependency.account.outputs.kompass_values_yaml
+}
+```
+
+### Multi-Cluster (production-grade live hierarchy)
+
+> [Full example](./examples/multi_clusters/terragrunt/)
+
+Uses a `live/` directory layout: environment / datacenter / region / account.
+One `account/` stack is applied once, then each EKS cluster gets its own `kompass-<cluster>/` stack that reads the account output via `dependency`.
+
+</details>
