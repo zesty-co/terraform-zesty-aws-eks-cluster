@@ -7,7 +7,6 @@ on:
       - "examples/**"
       - "tests/**"
       - "README.md"
-      - ".terraform-docs.yml"
       - ".pre-commit-config.yaml"
   workflow_dispatch:
     inputs:
@@ -19,7 +18,6 @@ on:
 env:
   TF_VERSION: "1.13.2"
   GO_VERSION: "1.21"
-  TERRAFORM_DOCS_VERSION: "v0.21.0"
 
 jobs:
   # ─── Layer 0: pre-commit (fmt + validate + lint + docs) ────────────────────
@@ -32,13 +30,6 @@ jobs:
       - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Install terraform-docs
-        run: |
-          curl -sSLo terraform-docs.tar.gz \
-            "https://github.com/terraform-docs/terraform-docs/releases/download/${{ env.TERRAFORM_DOCS_VERSION }}/terraform-docs-${{ env.TERRAFORM_DOCS_VERSION }}-linux-amd64.tar.gz"
-          tar -xzf terraform-docs.tar.gz terraform-docs
-          sudo mv terraform-docs /usr/local/bin/
 
       - uses: terraform-linters/setup-tflint@v4
         with:
