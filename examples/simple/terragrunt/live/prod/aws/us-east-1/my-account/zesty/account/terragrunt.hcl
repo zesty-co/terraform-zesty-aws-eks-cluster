@@ -2,7 +2,7 @@
 # Zesty AWS Account — applied ONCE per AWS account
 #
 # Creates IAM role + policy and registers the account with Zesty.
-# Outputs kompass_values_yaml consumed by the kompass-eks-* directories.
+# Outputs kompass_values_yaml consumed by the kompass/ directory.
 ###############################################################################
 
 include "datacenter" {

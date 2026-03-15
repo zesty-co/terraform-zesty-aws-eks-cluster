@@ -1,13 +1,11 @@
 ###############################################################################
-# Zesty Kompass — EKS cluster: eks-staging
+# Zesty Kompass — single-cluster Helm deployment
 #
-# Deploys the Kompass Helm chart into the eks-staging cluster.
+# Deploys the Kompass Helm chart into the EKS cluster.
 # Reads kompass_values_yaml from the account dependency.
-#
-# Each cluster gets its own directory, own state, own Helm provider.
 ###############################################################################
 
-include "root" {
+include "datacenter" {
   path = find_in_parent_folders("datacenter.hcl")
 }
 
@@ -23,11 +21,11 @@ dependency "account" {
 locals {
   region_vars  = read_terragrunt_config(find_in_parent_folders("region.hcl")).locals
   region       = local.region_vars.region
-  cluster_name = "eks-staging"
+  cluster_name = "my-eks-cluster" # replace with your EKS cluster name
 }
 
 terraform {
-  source = "${get_repo_root()}/examples/multi_clusters/terragrunt/modules/kompass"
+  source = "${get_repo_root()}/examples/simple/terragrunt/modules/kompass"
 }
 
 # ---------------------------------------------------------------------------

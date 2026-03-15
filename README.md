@@ -101,24 +101,27 @@ resource "helm_release" "kompass" {
 
 > [Full example](./examples/simple/terragrunt/)
 
-Account (`account/terragrunt.hcl`):
+Uses the same `live/` directory hierarchy as Multi-Cluster, with a single `kompass/` stack.
+
+Account (`zesty/account/terragrunt.hcl`):
 
 ```hcl
+include "datacenter" {
+  path = find_in_parent_folders("datacenter.hcl")
+}
+
 terraform {
   source = "tfr:///zesty-co/aws-eks-cluster/zesty?version=0.2.0"
 }
 
-generate "provider" {
-  path      = "provider.tf"
+generate "zesty_provider" {
+  path      = "zesty_provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<-EOF
-    provider "aws" {
-      region = "us-east-1"
-    }
-    provider "zesty" {
-      token = "your-zesty-api-token"
-    }
-  EOF
+provider "zesty" {
+  token = "your-zesty-api-token" # replace with your actual token
+}
+EOF
 }
 
 inputs = {
@@ -126,11 +129,23 @@ inputs = {
 }
 ```
 
-Kompass (`kompass/terragrunt.hcl`):
+Kompass (`zesty/kompass/terragrunt.hcl`):
 
 ```hcl
+include "datacenter" {
+  path = find_in_parent_folders("datacenter.hcl")
+}
+
 dependency "account" {
   config_path = find_in_parent_folders("account/terragrunt.hcl")
+}
+
+locals {
+  cluster_name = "my-eks-cluster"
+}
+
+terraform {
+  source = "${get_repo_root()}/examples/simple/terragrunt/modules/kompass"
 }
 
 inputs = {
