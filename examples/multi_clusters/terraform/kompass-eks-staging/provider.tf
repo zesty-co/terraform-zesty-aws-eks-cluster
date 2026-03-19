@@ -6,7 +6,7 @@ provider "aws" {
 # EKS cluster data — used by the Helm provider
 # ---------------------------------------------------------------------------
 locals {
-  cluster_name = "ompass-eks-staging"
+  cluster_name = "kompass-eks-staging"
 }
 
 data "aws_eks_cluster" "example" {

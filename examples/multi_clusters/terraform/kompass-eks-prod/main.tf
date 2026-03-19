@@ -2,8 +2,8 @@
 # Zesty Kompass — per-cluster Helm deployment
 #
 # Deploy this ONCE PER EKS CLUSTER.
-# Each cluster gets its own directory copy with its own state file and its own
-# var.cluster_name value.
+# Each cluster gets its own directory copy with its own state file and hardcoded
+# cluster name.
 #
 # Example directory layout for multi-cluster:
 #
@@ -13,7 +13,7 @@
 #   ├── kompass-eks-staging/   # copy of this directory — cluster_name = "eks-staging"
 #   └── kompass-eks-data/      # copy of this directory — cluster_name = "eks-data"
 #
-# Each copy only differs in backend key and cluster_name variable.
+# Each copy only differs in backend key and cluster name.
 ###############################################################################
 
 terraform {
