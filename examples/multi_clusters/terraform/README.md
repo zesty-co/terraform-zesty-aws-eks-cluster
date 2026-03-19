@@ -1,35 +1,41 @@
 # Terraform Multi-Cluster Example
 
-This example deploys Zesty across **one AWS account** and **multiple EKS clusters** using plain Terraform with S3 remote state.
+This example deploys Zesty into one AWS account and multiple EKS clusters using plain Terraform and S3 remote state.
 
 ## Architecture
 
 ```
-account/       → applied ONCE per AWS account  (IAM role + policy + zesty_account)
-kompass/       → applied ONCE PER EKS cluster  (Helm release)
+account/               -> applied once per AWS account
+kompass-eks-prod/      -> applied once per EKS cluster
+kompass-eks-staging/   -> applied once per EKS cluster
+kompass-eks-data/      -> applied once per EKS cluster
 ```
 
-Each cluster gets its own copy of the `kompass/` directory with a unique backend key and `cluster_name`.
+The `account/` stack registers the AWS account with Zesty and outputs `kompass_values_yaml`. Each `kompass-eks-*` stack reads that output from remote state and installs the Kompass Helm chart into its target cluster.
 
-```
+## Directory Structure
+
+```text
 infrastructure/
-├── account/                   # one per AWS account — own state
-├── kompass-eks-prod/          # cluster: eks-prod   — own state
-├── kompass-eks-staging/       # cluster: eks-staging — own state
-└── kompass-eks-data/          # cluster: eks-data   — own state
+├── account/                   # once per AWS account - own state
+├── kompass-eks-prod/          # cluster: eks-prod - own state
+├── kompass-eks-staging/       # cluster: eks-staging - own state
+└── kompass-eks-data/          # cluster: eks-data - own state
 ```
+
+Each `kompass-eks-*` directory is a standalone Terraform root with its own backend key, EKS lookup, and Helm release.
 
 ## Prerequisites
 
 - Terraform >= 1.1
-- AWS credentials configured
-- Zesty API token — set the `token` value in `account/provider.tf`
-- `kubectl` access to the target EKS clusters
-- S3 bucket for remote state
+- AWS credentials configured for the target account
+- Zesty API token configured in `account/provider.tf`
+- Access to the target EKS clusters
+- An S3 bucket for Terraform remote state
 
 ## Usage
 
-### 1. Apply the account layer (once per AWS account)
+### 1. Apply the account layer
 
 ```bash
 cd account
@@ -37,17 +43,33 @@ terraform init
 terraform apply
 ```
 
-### 2. Deploy Kompass per cluster
+This creates the Zesty account resources and stores the generated Kompass values in remote state.
 
-Copy the `kompass/` directory for each EKS cluster. Change the backend `key` and set `cluster_name`:
+### 2. Apply each cluster layer
+
+For each `kompass-eks-*` directory:
+
+1. Set a unique backend `key` in `main.tf`
+2. Set the target EKS cluster name in `provider.tf`
+3. Run Terraform in that directory
+
+Example:
 
 ```bash
 cd kompass-eks-prod
 terraform init
-terraform apply -var="cluster_name=eks-prod"
+terraform apply
 ```
 
-Repeat for each cluster.
+Repeat for `kompass-eks-staging`, `kompass-eks-data`, or any additional cluster directory you create.
+
+## Adding a New Cluster
+
+1. Copy one of the existing `kompass-eks-*` directories
+2. Rename it for the new cluster
+3. Update the S3 backend `key` in `main.tf`
+4. Update `local.cluster_name` in `provider.tf`
+5. Run `terraform init` and `terraform apply`
 
 ## Files
 
@@ -55,17 +77,16 @@ Repeat for each cluster.
 
 | File | Description |
 |------|-------------|
+| `main.tf` | S3 backend and module call to the repository root |
+| `outputs.tf` | Exposes `kompass_values_yaml` for cluster stacks |
 | `provider.tf` | AWS and Zesty provider configuration |
-| `main.tf` | S3 backend + module call with `create_values_local_file = false` |
-| `outputs.tf` | Exposes `kompass_values_yaml` for downstream consumers |
-| — | — |
-| `versions.tf` | Required providers (AWS, Zesty) |
+| `versions.tf` | Terraform and provider version constraints |
 
-### `kompass/`
+### `kompass-eks-*/`
 
 | File | Description |
 |------|-------------|
-| `provider.tf` | AWS + Helm provider (authenticates to EKS via data sources) |
-| `main.tf` | S3 backend + `terraform_remote_state` + `helm_release` |
-| `variables.tf` | `cluster_name`, `region` |
-| `versions.tf` | Required providers (AWS, Helm) |
+| `main.tf` | S3 backend, remote state lookup, and `helm_release` |
+| `provider.tf` | AWS provider, EKS data sources, and Helm provider |
+| `variables.tf` | Region input definition |
+| `versions.tf` | Terraform and provider version constraints |
